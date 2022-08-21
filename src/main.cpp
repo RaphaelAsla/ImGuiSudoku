@@ -2,10 +2,8 @@
 #include <imgui.h>
 
 #include <SFML/Graphics.hpp>
-#include <algorithm>
 #include <array>
 #include <iostream>
-#include <random>
 
 #include "sudoku_functions.hpp"
 
