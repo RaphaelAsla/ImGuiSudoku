@@ -1,4 +1,11 @@
 # Sudoku generator and solver, easy to use.
-Generates valid sudoku puzzles that you can either solve your self or using the "solve" option.
+First of all you need to setup imgui-sfml <code>https://github.com/eliasdaler/imgui-sfml</code>
+then
+```bash
+mkdir build && cd build
+CXX=clang++ cmake -GNinja -DCMAKE_BUILD_TYPE=Release ..
+ninja
+./sudoku
+```
 <br>
 <strong>Note that "difficulty" is relative, more empty cells doesn't necessarily mean that its a harder puzzle</strong>
