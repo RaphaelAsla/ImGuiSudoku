@@ -54,6 +54,13 @@ bool possible(int row, int col, int num, int (&puzzle)[9][9]) {
     return true;
 }
 
+/*random shuffle*/
+void randSort(std::array<int, 9>& arr) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::shuffle(arr.begin(), arr.end(), gen);
+}
+
 /*solves the puzzle, technically we don't really need this since we have already generated a valid "solved" puzzle*/
 bool solve(int (&puzzle)[9][9]) {
     for (int i = 0; i < 9; i++) {
@@ -97,11 +104,4 @@ bool gen_sudoku(int (&puzzle)[9][9]) {
         }
     }
     return true;
-}
-
-/*random shuffle*/
-void randSort(std::array<int, 9>& arr) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::shuffle(arr.begin(), arr.end(), gen);
 }
