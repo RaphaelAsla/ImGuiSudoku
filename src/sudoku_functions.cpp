@@ -75,13 +75,6 @@ bool solve(int (&puzzle)[9][9]) {
     return true;
 }
 
-/*random shuffle*/
-void randSort(std::array<int, 9>& arr) {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::shuffle(arr.begin(), arr.end(), gen);
-}
-
 /*generates a valid sudoku puzzles*/
 bool gen_sudoku(int (&puzzle)[9][9]) {
     std::array<int, 9> rArr = {1, 2, 3, 4, 5, 6, 7, 8, 9};
@@ -104,4 +97,11 @@ bool gen_sudoku(int (&puzzle)[9][9]) {
         }
     }
     return true;
+}
+
+/*random shuffle*/
+void randSort(std::array<int, 9>& arr) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::shuffle(arr.begin(), arr.end(), gen);
 }
