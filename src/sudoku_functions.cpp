@@ -36,9 +36,7 @@ void displayPuzzle(sf::RenderWindow& window, sf::Text& text, int (&puzzle)[9][9]
 /*checks if position of input number is valid*/
 bool possible(int row, int col, int num, int (&puzzle)[9][9]) {
     for (int i = 0; i < 9; i++) {
-        if (puzzle[row][i] == num || puzzle[i][col] == num) {
-            return false;
-        }
+        if (puzzle[row][i] == num || puzzle[i][col] == num) return false;
     }
 
     row = (row / 3) * 3;
@@ -46,9 +44,7 @@ bool possible(int row, int col, int num, int (&puzzle)[9][9]) {
 
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3; j++) {
-            if (puzzle[row + i][col + j] == num) {
-                return false;
-            }
+            if (puzzle[row + i][col + j] == num) return false;
         }
     }
 
@@ -70,9 +66,7 @@ bool solve(int (&puzzle)[9][9]) {
             for (int n = 1; n <= 9; n++) {
                 if (!possible(i, j, n, puzzle)) continue;
                 puzzle[i][j] = n;
-                if (solve(puzzle)) {
-                    return true;
-                }
+                if (solve(puzzle)) return true;
                 puzzle[i][j] = 0;
             }
             return false;
@@ -92,9 +86,7 @@ bool gen_sudoku(int (&puzzle)[9][9]) {
             for (int n = 0; n < 9; n++) {
                 if (!possible(i, j, rArr[n], puzzle)) continue;
                 puzzle[i][j] = rArr[n];
-                if (gen_sudoku(puzzle)) {
-                    return true;
-                }
+                if (gen_sudoku(puzzle)) return true;
                 puzzle[i][j] = 0;
             }
             return false;
