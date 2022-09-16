@@ -68,13 +68,12 @@ bool solve(int (&puzzle)[9][9]) {
         for (int j = 0; j < 9; j++) {
             if (puzzle[i][j] != 0) continue;
             for (int n = 1; n <= 9; n++) {
-                if (possible(i, j, n, puzzle)) {
-                    puzzle[i][j] = n;
-                    if (solve(puzzle)) {
-                        return true;
-                    }
-                    puzzle[i][j] = 0;
+                if (!possible(i, j, n, puzzle)) continue;
+                puzzle[i][j] = n;
+                if (solve(puzzle)) {
+                    return true;
                 }
+                puzzle[i][j] = 0;
             }
             return false;
         }
@@ -91,13 +90,12 @@ bool gen_sudoku(int (&puzzle)[9][9]) {
             if (puzzle[i][j] != 0) continue;
             randSort(rArr);
             for (int n = 0; n < 9; n++) {
-                if (possible(i, j, rArr[n], puzzle)) {
-                    puzzle[i][j] = rArr[n];
-                    if (gen_sudoku(puzzle)) {
-                        return true;
-                    }
-                    puzzle[i][j] = 0;
+                if (!possible(i, j, rArr[n], puzzle)) continue;
+                puzzle[i][j] = rArr[n];
+                if (gen_sudoku(puzzle)) {
+                    return true;
                 }
+                puzzle[i][j] = 0;
             }
             return false;
         }
