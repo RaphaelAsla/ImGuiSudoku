@@ -19,13 +19,14 @@ void drawGrid(sf::RenderWindow& window, int space_btw) {
 void displayPuzzle(sf::RenderWindow& window, sf::Text& text, int (&puzzle)[9][9]) {
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-            if (puzzle[i][j] != 0) {
-                text.setString(std::to_string(puzzle[i][j]));
-                text.setPosition(i * text.getCharacterSize() + 5, j * text.getCharacterSize());
+            /*if puzzle[i][j] is 0 then display ' ' (empty cell)*/
+            if (puzzle[i][j] == 0) {
+                text.setString(' ');
                 window.draw(text);
             } else {
-                /*if puzzle[i][j] is 0 then display ' ' (empty cell)*/
-                text.setString(' ');
+                /*else display nothing in cell*/
+                text.setString(std::to_string(puzzle[i][j]));
+                text.setPosition(i * text.getCharacterSize() + 5, j * text.getCharacterSize());
                 window.draw(text);
             }
         }
@@ -65,18 +66,17 @@ void randSort(std::array<int, 9>& arr) {
 bool solve(int (&puzzle)[9][9]) {
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-            if (puzzle[i][j] == 0) {
-                for (int n = 1; n <= 9; n++) {
-                    if (possible(i, j, n, puzzle)) {
-                        puzzle[i][j] = n;
-                        if (solve(puzzle)) {
-                            return true;
-                        }
-                        puzzle[i][j] = 0;
+            if (puzzle[i][j] != 0) continue;
+            for (int n = 1; n <= 9; n++) {
+                if (possible(i, j, n, puzzle)) {
+                    puzzle[i][j] = n;
+                    if (solve(puzzle)) {
+                        return true;
                     }
+                    puzzle[i][j] = 0;
                 }
-                return false;
             }
+            return false;
         }
     }
     return true;
@@ -88,19 +88,18 @@ bool gen_sudoku(int (&puzzle)[9][9]) {
 
     for (int i = 0; i < 9; i++) {
         for (int j = 0; j < 9; j++) {
-            if (puzzle[i][j] == 0) {
-                randSort(rArr);
-                for (int n = 0; n < 9; n++) {
-                    if (possible(i, j, rArr[n], puzzle)) {
-                        puzzle[i][j] = rArr[n];
-                        if (gen_sudoku(puzzle)) {
-                            return true;
-                        }
-                        puzzle[i][j] = 0;
+            if (puzzle[i][j] != 0) continue;
+            randSort(rArr);
+            for (int n = 0; n < 9; n++) {
+                if (possible(i, j, rArr[n], puzzle)) {
+                    puzzle[i][j] = rArr[n];
+                    if (gen_sudoku(puzzle)) {
+                        return true;
                     }
+                    puzzle[i][j] = 0;
                 }
-                return false;
             }
+            return false;
         }
     }
     return true;
