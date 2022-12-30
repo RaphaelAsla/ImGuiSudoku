@@ -12,9 +12,9 @@ void DrawGrid(sf::RenderWindow& window) {
         window.draw(vertical_line, 2, sf::Lines);
 
         // Draw horizontal line
-        sf::Vertex horizontalLine[] = {sf::Vector2f(offset, padding * i + offset),
-                                       sf::Vector2f(padding * 9 + offset, padding * i + offset)};
-        window.draw(horizontalLine, 2, sf::Lines);
+        sf::Vertex horizontal_line[] = {sf::Vector2f(offset, padding * i + offset),
+                                        sf::Vector2f(padding * 9 + offset, padding * i + offset)};
+        window.draw(horizontal_line, 2, sf::Lines);
     }
 }
 
