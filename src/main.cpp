@@ -4,47 +4,37 @@
 #include <SFML/Graphics.hpp>
 #include <array>
 #include <iostream>
+#include <random>
 
 #include "sudoku_functions.hpp"
 
 static constexpr std::size_t window_width = 800;
 static constexpr std::size_t window_height = 500;
-static const std::string window_name = "Sudoku puzzles";
+static const std::string window_name = "Sudoku generator";
 static const std::string font_name = "../font/JetBrainsMonoNL-Bold.ttf";
 
 int main() {
+    std::mt19937 gen(std::random_device{}());
+
     sf::RenderWindow window(sf::VideoMode(window_width, window_height), window_name, sf::Style::Close);
 
     ImGui::SFML::Init(window);
 
     sf::Font font;
 
-    /*Checks if font is loaded, if not quit*/
     if (!font.loadFromFile(font_name)) {
         std::cerr << "Font not found, try another path\n";
         return 1;
     }
 
-    /*setting the font*/
     sf::Text text;
     text.setFont(font);
 
-    /*grid*/
-    int puzzle[9][9] = {};
-
-    /*variable that will be used for ImGui::Chechbox()*/
-    bool makePuzzle = false;
-
-    /*self explanatory*/
+    std::array<std::array<int, 9>, 9> puzzle = {};
+    std::vector<std::pair<int, int>> coords;
+    std::vector<int> values;
+    bool generate = false;
     int difficulty = 30;
-
-    /*space between lines of grid (how big the boxes are gonna be)*/
-    int space_btw = 30;
-
-    /*we shuffle this array to get random location to put zeros (0)*/
-    std::array<int, 9> rArr = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-
-    /*==============================================================*/
 
     sf::Clock deltaClock;
     while (window.isOpen()) {
@@ -52,43 +42,54 @@ int main() {
 
         while (window.pollEvent(event)) {
             ImGui::SFML::ProcessEvent(event);
-            if (event.type == sf::Event::Closed) window.close();
+            if (event.type == sf::Event::Closed)
+                window.close();
         }
 
-        /*Content of ImGui*/
+        /* ImGui window */
         ImGui::SFML::Update(window, deltaClock.restart());
         ImGui::Begin("Sudoku");
-        bool button = ImGui::Button("Solve", ImVec2(75, 25));
+        bool solve_bt = ImGui::Button("Solve", ImVec2(75, 25));
         ImGui::SliderInt("Difficulty", &difficulty, 0, 100);
-        ImGui::Checkbox("Generate", &makePuzzle);
+        ImGui::Checkbox("Generate", &generate);
         ImGui::End();
 
         window.clear(sf::Color(18, 33, 43));
 
-        drawGrid(window, space_btw);
+        DrawGrid(window);
 
-        /*if "Generate" button is checked, generate new puzzle*/
-        if (makePuzzle) {
-            /*reset puzzle (make everything a zero (0))*/
-            memset(puzzle, 0, sizeof(puzzle));
+        /* if generate button is checked, generate new puzzle */
+        if (generate) {
+            coords.clear();
+            values.clear();
 
-            gen_sudoku(puzzle);
+            for (auto& row : puzzle) {
+                std::fill(row.begin(), row.end(), 0);
+            }
 
-            /*getting random locations to place set zero (0)*/
-            randSort(rArr);
+            GenSudoku(puzzle);
+
+            /* getting random locations to appear empty */
             for (int i = 0; i < difficulty; i++) {
-                puzzle[rArr[rand() % 9]][rArr[rand() % 9]] = 0;
+                const int row = std::uniform_int_distribution<int>{0, 8}(gen);
+                const int col = std::uniform_int_distribution<int>{0, 8}(gen);
+                if (puzzle[row][col] != 0) {
+                    coords.emplace_back(std::make_pair(row, col));
+                    values.emplace_back(puzzle[row][col]);
+                    puzzle[row][col] = 0;
+                }
+            }
+            /* else if solve button is pressed, solve the puzzle */
+        } else if (solve_bt) {
+            for (size_t i = 0; i < coords.size(); i++) {
+                puzzle[coords[i].first][coords[i].second] = values[i];
             }
         }
 
-        displayPuzzle(window, text, puzzle);
+        /* write the stuff into the window buffer */
+        DisplayPuzzle(window, text, puzzle);
 
-        /*finnaly, solve the puzzle if solution exists*/
-        if (button && !solve(puzzle)) {
-            std::cerr << "puzzle has no solution\n";
-        }
-
-        /*render everything*/
+        /* render everything */
         ImGui::SFML::Render(window);
         window.display();
     }
