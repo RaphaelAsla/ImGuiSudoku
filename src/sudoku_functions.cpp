@@ -7,9 +7,9 @@ void DrawGrid(sf::RenderWindow& window) {
     int offset = 10;
     for (int i = 0; i < 10; i++) {
         // Draw vertical line
-        sf::Vertex verticalLine[] = {sf::Vector2f(padding * i + offset, offset),
-                                     sf::Vector2f(padding * i + offset, padding * 9 + offset)};
-        window.draw(verticalLine, 2, sf::Lines);
+        sf::Vertex vertical_line[] = {sf::Vector2f(padding * i + offset, offset),
+                                      sf::Vector2f(padding * i + offset, padding * 9 + offset)};
+        window.draw(vertical_line, 2, sf::Lines);
 
         // Draw horizontal line
         sf::Vertex horizontalLine[] = {sf::Vector2f(offset, padding * i + offset),
